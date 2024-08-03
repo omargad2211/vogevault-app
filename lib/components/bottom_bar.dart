@@ -18,7 +18,7 @@ class _BottomBarState extends State<BottomBar> {
   final pages = [
     HomePage(),
     const Categories(),
-    const LogIn(),
+    LogIn(),
     const SignUp(),
   ];
 

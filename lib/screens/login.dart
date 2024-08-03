@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:flutter_application_5/screens/success.dart';
+import 'package:flutter_application_5/models/user.dart';
+import 'package:collection/collection.dart';
 
 class LogIn extends StatelessWidget {
-  const LogIn({super.key});
+   LogIn({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +33,7 @@ class LogIn extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             child: Column(
               children: [
-                const SizedBox(height: 32), // Add some top spacing
+                const SizedBox(height: 32),
                 const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -51,25 +54,27 @@ class LogIn extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 56),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                          prefixIcon: Icon(Icons.email),
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        prefixIcon: Icon(Icons.lock),
-                        border: OutlineInputBorder(),
-                      ),
-                      obscureText: true, // Add this for password fields
-                    ),
                   ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: TextField(
+                    controller: _emailController,
+                    decoration: const InputDecoration(
+                      labelText: 'Email',
+                      prefixIcon: Icon(Icons.email),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                TextField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                    prefixIcon: Icon(Icons.lock),
+                    border: OutlineInputBorder(),
+                  ),
+                  obscureText: true,
                 ),
                 const SizedBox(height: 30),
                 Padding(
@@ -77,17 +82,8 @@ class LogIn extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      // Login Button
                       ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute<void>(
-                              builder: (BuildContext context) =>
-                                  const Success(),
-                            ),
-                          );
-                        },
+                        onPressed: () => _login(context),
                         child: const Text(
                           'Login',
                           style: TextStyle(fontSize: 18, color: Colors.white),
@@ -113,7 +109,6 @@ class LogIn extends StatelessWidget {
                           ),
                         ),
                       ),
-                      // Continue with Facebook Button
                       ElevatedButton.icon(
                         onPressed: () {
                           // Add your Facebook login logic here
@@ -125,7 +120,7 @@ class LogIn extends StatelessWidget {
                         ),
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(320, 60),
-                          backgroundColor: Colors.blue[800], // Facebook color
+                          backgroundColor: Colors.blue[800],
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 12),
                           shape: RoundedRectangleBorder(
@@ -142,8 +137,7 @@ class LogIn extends StatelessWidget {
                             // Add your Google login logic here
                           },
                           icon: const Icon(Icons.account_circle,
-                              color: Colors
-                                  .black), // Replace with Google icon if available
+                              color: Colors.black),
                           label: const Text(
                             'Continue with Google',
                             style: TextStyle(fontSize: 18, color: Colors.black),
@@ -160,14 +154,11 @@ class LogIn extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 16.0),
-                      // Continue with Apple Button
                       ElevatedButton.icon(
                         onPressed: () {
                           // Add your Apple login logic here
                         },
-                        icon: const Icon(Icons.apple,
-                            color: Colors
-                                .black), // Replace with Apple icon if available
+                        icon: const Icon(Icons.apple, color: Colors.black),
                         label: const Text(
                           'Continue with Apple',
                           style: TextStyle(fontSize: 18, color: Colors.black),
@@ -175,7 +166,6 @@ class LogIn extends StatelessWidget {
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(320, 60),
                           iconColor: Colors.transparent,
-                          // Apple color
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 12),
                           shape: RoundedRectangleBorder(
@@ -190,6 +180,48 @@ class LogIn extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> _login(BuildContext context) async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please fill in all fields.'),
+        ),
+      );
+      return;
+    }
+
+    // Open the Hive box
+    var userBox = Hive.box<User>('users');
+
+    // Find the user using firstWhere with a default value
+    var user = userBox.values.firstWhereOrNull(
+      (user) => user.email == email && user.password == password,
+    );
+
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid email or password.'),
+        ),
+      );
+      return;
+    }
+
+    // Proceed to the success page
+    Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) => const Success(),
       ),
     );
   }
