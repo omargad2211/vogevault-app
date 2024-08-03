@@ -38,16 +38,17 @@
 //   }
 // }
 import 'package:flutter/material.dart';
+import 'package:flutter_application_5/components/app_bar.dart';
 import 'package:flutter_application_5/components/category_item.dart';
 
 class AllCategories extends StatelessWidget {
-   final List<CategoryItem> categories = [
+  final List<CategoryItem> categories = [
     CategoryItem(
       title: 'New Arrivals',
       text: '208 Products',
-      icon: const Icon(Icons.new_releases, color: Colors.white),
+      icon: const Icon(Icons.add_shopping_cart_outlined, color: Colors.white),
       image: Image.asset(
-        'assets/images/shitrs.jpg',
+        'assets/images/clothes.jpg',
         fit: BoxFit.cover,
         height: double.infinity,
         width: double.infinity,
@@ -59,7 +60,7 @@ class AllCategories extends StatelessWidget {
     CategoryItem(
       title: 'Clothes',
       text: '358 Products',
-      icon: const Icon(Icons.shopping_bag, color: Colors.white),
+      icon: const Icon(Icons.checkroom, color: Colors.white),
       image: Image.asset(
         'assets/images/cloth.jpg',
         fit: BoxFit.cover,
@@ -75,7 +76,7 @@ class AllCategories extends StatelessWidget {
       text: '160 Products',
       icon: const Icon(Icons.shopping_bag, color: Colors.white),
       image: Image.asset(
-        'assets/images/bags.png',
+        'assets/images/bags.jpg',
         fit: BoxFit.cover,
         height: double.infinity,
         width: double.infinity,
@@ -103,7 +104,7 @@ class AllCategories extends StatelessWidget {
       text: '130 Products',
       icon: const Icon(Icons.electrical_services, color: Colors.white),
       image: Image.asset(
-        'assets/images/electronics.png',
+        'assets/images/electro.jpg',
         fit: BoxFit.cover,
         height: double.infinity,
         width: double.infinity,
@@ -115,9 +116,9 @@ class AllCategories extends StatelessWidget {
     CategoryItem(
       title: 'Jewelry',
       text: '87 Products',
-      icon: const Icon(Icons.shopping_bag, color: Colors.white),
+      icon: const Icon(Icons.diamond, color: Colors.white),
       image: Image.asset(
-        'assets/images/jewelry.png',
+        'assets/images/product-original.jpg',
         fit: BoxFit.cover,
         height: double.infinity,
         width: double.infinity,
@@ -131,10 +132,7 @@ class AllCategories extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Hover ListTile Demo'),
-        backgroundColor: Colors.grey[900],
-      ),
+      appBar: CustomAppBar(),
       backgroundColor: Colors.grey[900],
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -171,4 +169,3 @@ void main() {
     home: AllCategories(),
   ));
 }
-
